@@ -5,3 +5,27 @@
     margin: 0;
     padding: 0;
 }
+
+body {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background-color: lightblue;
+}
+
+.gameboard {
+    width: 500px;
+    height: 500px;
+    background-color: lightgrey;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.gameboard > div {
+    font-family: sans-serif;
+    display: grid;
+    place-items: center;
+    border: 2px solid black;
+    font-size: 5rem;
+}

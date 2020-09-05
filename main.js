@@ -5,5 +5,21 @@ const gameBoard = (() => {
         ['X', 'X', 'O']
     ];
 
-    return { gameBoardArray, editGameBoard };
+    return { gameBoardArray };
+})();
+
+const displayController = (() => {
+    // get DOM elements
+    const gameBoardElement = document.querySelector('.gameboard');
+    const gameBoardCells = gameBoardElement.querySelectorAll('div');
+
+    // render gameboard array to screen
+    const render = () => {
+        gameBoardCells.forEach(cell => {
+            cell.textContent =
+                gameBoard.gameBoardArray[cell.dataset.row][cell.dataset.column];
+        });
+    };
+
+    return { render };
 })();
