@@ -103,18 +103,19 @@ const gameController = (() => {
     const startGame = () => {
         // reset game to starting settings
         reset();
-
+        
         // get players
         players = getPlayers();
 
         // set current player
         currentPlayer = players.player1;
 
-        // set click event listener on cells
+        // set click event listener on cells that only fires once
         eventController.addEvent(
             domElements.gameBoardCells,
             'click',
-            processCellClick
+            processCellClick,
+            { once: true }
         );
 
     };
@@ -170,26 +171,24 @@ const gameController = (() => {
 
     // proccess the click event on a cell
     const processCellClick = (event) => {
+        // get the click cell info
         const cell = {
             element: event.target,
             row: event.target.dataset.row,
             column: event.target.dataset.column
         }
 
-        // if cell is empty
-        if (gameBoard.getValue(cell.row, cell.column) === '') {
-            // get the current player
-            const currentPlayer = getCurrentPlayer();
+        // get the current player
+        const currentPlayer = getCurrentPlayer();
 
-            // update cell with players mark
-            gameBoard.editGameBoard(cell.row, cell.column, currentPlayer.mark);
+        // update cell with players mark
+        gameBoard.editGameBoard(cell.row, cell.column, currentPlayer.mark);
 
-            // check for winner or draw
-            if (isWinnerOrDraw(cell, currentPlayer)) {
-                endGame();
-            } else {
-                turn++;
-            }
+        // check for winner or draw
+        if (isWinnerOrDraw(cell, currentPlayer)) {
+            endGame();
+        } else {
+            turn++;
         }
     };
 
@@ -259,9 +258,9 @@ const gameController = (() => {
 // module for creating event listeners
 const eventController = (() => {
     // add event listener
-    const addEvent = (target, type, listener) => {
+    const addEvent = (target, type, listener, options) => {
         target.forEach(element => {
-            element.addEventListener(`${type}`, listener);
+            element.addEventListener(`${type}`, listener, options);
         });
     };
 
