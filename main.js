@@ -23,7 +23,7 @@ const displayController = (() => {
     const render = () => {
         domElements.gameBoardCells.forEach(cell => {
             cell.textContent =
-                gameBoard.getValue(cell.dataset.row, cell.dataset.column);
+                gameBoard.getValue(cell.dataset.index);
         });
     };
 
@@ -48,49 +48,27 @@ const displayController = (() => {
 // module for manipulating gameboard
 const gameBoard = (() => {
     let _gameBoardArray = [
-        ['', '', ''],
-        ['', '', ''],
-        ['', '', '']
+        '', '', '',
+        '', '', '',
+        '', '', ''
     ];
 
     // return value of array element
-    const getValue = (row, column) => _gameBoardArray[row][column];
+    const getValue = (index) => _gameBoardArray[index];
 
     // change value of array element
-    const editGameBoard = (row, column, newValue) => {
-        _gameBoardArray[row][column] = newValue;
+    const editGameBoard = (index, newValue) => {
+        _gameBoardArray[index] = newValue;
         displayController.render();
     };
 
     // set all array elements to empty string
     const clearGameBoard = () => {
-        _gameBoardArray.forEach(row => row.fill(''));
+        _gameBoardArray.fill('');
         displayController.render();
     };
 
-    // get row, column of a cell and both diagonals of gameboard
-    const getRowColumnDiagonals = (cell) => {
-        // store gameboard in shorter named variable for ease of use
-        const g = _gameBoardArray;
-
-        // store row and column values of cell
-        const r = parseInt(cell.row);
-        const c = parseInt(cell.column);
-
-        // store values of row cell is in
-        const row = g[r];
-
-        // store values of column cell is in
-        const column = [g[0][c], g[1][c], g[2][c]];
-
-        // store values of diagonals on gameboard
-        const diagonal1 = [g[0][0], g[1][1], g[2][2]];
-        const diagonal2 = [g[2][0], g[1][1], g[0][2]];
-
-        return { row, column, diagonal1, diagonal2 };
-    };
-
-    return { getValue, editGameBoard, clearGameBoard, getRowColumnDiagonals };
+    return { getValue, editGameBoard, clearGameBoard };
 })();
 
 // module for controlling the game
@@ -98,6 +76,18 @@ const gameController = (() => {
     let players = null;
     let currentPlayer = null;
     let turn = 1;
+
+    // all possible winning combinations (lines)
+    const winningCombinations = [
+        [0, 1, 2],
+        [3 ,4 ,5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1 ,4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ];
 
     // start the game
     const startGame = () => {
@@ -174,59 +164,49 @@ const gameController = (() => {
         // get the click cell info
         const cell = {
             element: event.target,
-            row: event.target.dataset.row,
-            column: event.target.dataset.column
+            index: event.target.dataset.index
         }
 
         // get the current player
         const currentPlayer = getCurrentPlayer();
 
         // update cell with players mark
-        gameBoard.editGameBoard(cell.row, cell.column, currentPlayer.mark);
+        gameBoard.editGameBoard(cell.index, currentPlayer.mark);
 
-        // check for winner or draw
-        if (isWinnerOrDraw(cell, currentPlayer)) {
+        // get winner if there is one
+        const winner = getWinner(currentPlayer);
+
+    
+        // announce if theres a winner or draw and end the game, else next round
+        if (winner) {
+            announce('win', winner);
+            endGame();
+        } else if (isDraw()) {
+            announce('draw');
             endGame();
         } else {
             turn++;
         }
     };
 
-    // check if there is a winner of it a draw then call a announcement
-    const isWinnerOrDraw = (cell, currentPlayer) => {
-            // get winner if there is one
-            const winner = isWinner(cell, currentPlayer);
-
-            // announce winner or draw
-            if (winner) {
-                announce('win', winner);
-            } else if (isDraw()) {
-                announce('draw');
-            }
-
-            // return true if there is a winner or if its a draw
-            return winner || isDraw();
-    };
-
     // check if there is a winnner
-    const isWinner = (cell, currentPlayer) => {
-        // get row, column, and diagonals object for cell and convert to array
-        const entries = Object.entries(gameBoard.getRowColumnDiagonals(cell));
+    const getWinner = (player) => {
+        let winner = null;
 
-        // initalize bool to check if current value is equal to the players mark
-        const isEqualMark = (currentValue) => currentValue === currentPlayer.mark;
+        // returns true if value at index is equal to players mark
+        const isEqualMark = (index) => gameBoard.getValue(index) === player.mark;
 
-        // loop through arrays created from Object.entries
-        for (const [type, array] of entries) {
-            // if all values are equal to the players mark
-            if (array.every(isEqualMark)) {
-                // return winner
-                return {
-                    name: currentPlayer.name,
-                    type: type
-                }
+        // return a winner if player has three marks in a row
+        winningCombinations.forEach(combination => {
+            if(combination.every(isEqualMark)) {
+                winner = {
+                    player,
+                    winningCombination: combination
+                };
             }
-        }
+        });
+
+        return winner;
     };
 
     // check if it is a draw
@@ -239,7 +219,7 @@ const gameController = (() => {
             case 'win':
                 displayController.setTextContent(
                     announcerElem,
-                    `Winner! ${winner.name} wins with 3 in a ${winner.type}.`
+                    `${winner.player.name} wins with ${winner.player.mark}'s`
                 );
                 displayController.showElement(announcerElem);
                 break;
