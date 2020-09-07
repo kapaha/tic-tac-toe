@@ -11,7 +11,10 @@ const domElements = (() => {
     // store each cell in gameboard element
     const gameBoardCells = [..._gameBoardElem.querySelectorAll('div')];
 
-    return { gameBoardCells }
+    // store announcer p tag element
+    const announcerElem = document.querySelector('.announcer');
+
+    return { gameBoardCells, announcerElem}
 })();
 
 // module for manipulating the DOM
@@ -24,10 +27,25 @@ const displayController = (() => {
         });
     };
 
-    return { render };
+    // set textContent of a element
+    const setTextContent = (element, text) => {
+        element.textContent = text;
+    };
+
+    // show an element
+    const showElement = (element) => {
+        element.classList.add('is-visible');
+    };
+
+    // hide an element
+    const hideElement = (element) => {
+        element.classList.remove('is-visible');
+    };
+
+    return { render, setTextContent, showElement, hideElement};
 })();
 
-// module for maniuplating gameboard
+// module for manipulating gameboard
 const gameBoard = (() => {
     let _gameBoardArray = [
         ['', '', ''],
@@ -83,8 +101,8 @@ const gameController = (() => {
 
     // start the game
     const startGame = () => {
-        // FOR TESTING
-        console.group('StartGame');
+        // reset game to starting settings
+        reset();
 
         // get players
         players = getPlayers();
@@ -99,31 +117,30 @@ const gameController = (() => {
             processCellClick
         );
 
-        // FOR TESTING
-        console.log('Game Started!');
-        console.groupEnd();
     };
 
     // end the game
     const endGame = () => {
-        // FOR TESTING
-        console.group('EndGame');
-
-        // reset players and current player and turn
-        players = null;
-        currentPlayer = null;
-        turn = 1;
-
         // remove click event listener on cells
         eventController.removeEvent(
             domElements.gameBoardCells,
             'click',
             processCellClick
         );
-        
-        // FOR TESTING
-        console.log('Game Ended!');
-        console.groupEnd();
+    };
+
+    // reset game to beggining
+    const reset = () => {
+        // reset players and current player and turn
+        players = null;
+        currentPlayer = null;
+        turn = 1;
+
+        // reset gameboard
+        gameBoard.clearGameBoard();
+
+        // hide announcement msg
+        displayController.hideElement(domElements.announcerElem);
     };
 
     // get players, TODO: get user input for player names
@@ -218,20 +235,22 @@ const gameController = (() => {
 
     // announce winner or draw
     const announce = (status, winner) => {
-        // FOR TESTING
-        console.group('Announce');
+        const announcerElem = domElements.announcerElem;
         switch (status) {
             case 'win':
-                console.log(`Winner! ${winner.name} wins with 3 in a ${winner.type}.`);
+                displayController.setTextContent(
+                    announcerElem,
+                    `Winner! ${winner.name} wins with 3 in a ${winner.type}.`
+                );
+                displayController.showElement(announcerElem);
                 break;
             case 'draw':
-                console.log(`Draw!`);
+                displayController.setTextContent(announcerElem, 'Draw!');
+                displayController.showElement(announcerElem);
                 break;
             default:
-                console.log('Error please add status argument');
                 break;
         }
-        console.groupEnd();
     };
 
     return { startGame };
@@ -244,8 +263,6 @@ const eventController = (() => {
         target.forEach(element => {
             element.addEventListener(`${type}`, listener);
         });
-        // FOR TESTING
-        console.log(`${type} event added.`);
     };
 
     // remove event listener
@@ -253,8 +270,6 @@ const eventController = (() => {
         target.forEach(element => {
             element.removeEventListener(`${type}`, listener);
         });
-        // FOR TESTING
-        console.log(`${type} event removed.`);
     };
 
     return { addEvent, removeEvent };

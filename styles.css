@@ -7,15 +7,23 @@
 }
 
 body {
-    min-height: 100vh;
+    background-color: lightblue;
+}
+
+.container {
+    margin: 4rem auto;
+    padding: 2rem;
+
     display: grid;
     place-items: center;
-    background-color: lightblue;
 }
 
 .gameboard {
     width: 700px;
     height: 700px;
+
+    margin-bottom: 5rem;
+
     background-color: lightgrey;
 
     display: grid;
@@ -29,4 +37,16 @@ body {
     place-items: center;
     border: 2px solid black;
     font-size: 7rem;
+}
+
+.announcer {
+    font-size: 3rem;
+}
+
+.toggle-content {
+    display: none;
+}
+
+.toggle-content.is-visible {
+    display: block;
 }
