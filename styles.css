@@ -50,3 +50,7 @@ body {
 .toggle-content.is-visible {
     display: block;
 }
+
+.highlight {
+    background-color: lightgreen;
+}

@@ -148,6 +148,9 @@ const gameController = (() => {
 
         // hide announcement msg
         displayController.hideElement(domElements.announcerElem);
+
+        // remove color from winning cells
+        displayController.removeClassFromElements(domElements.gameBoardCells, 'highlight');
     };
 
     // get players, TODO: get user input for player names
@@ -192,10 +195,10 @@ const gameController = (() => {
         // get winner if there is one
         const winner = getWinner(currentPlayer);
 
-    
         // announce if theres a winner or draw and end the game, else next round
         if (winner) {
             announce('win', winner);
+            displayController.addClassToElements(winner.winningCells, 'highlight');
             endGame();
         } else if (isDraw()) {
             announce('draw');
@@ -203,6 +206,13 @@ const gameController = (() => {
         } else {
             turn++;
         }
+    };
+
+    // get winning cell dom elements
+    const getWinningCells = (winningCombination) => {
+        return winningCombination.map(index => {
+            return domElements.gameBoardCells[index];
+        });
     };
 
     // check if there is a winnner
@@ -217,7 +227,7 @@ const gameController = (() => {
             if(combination.every(isEqualMark)) {
                 winner = {
                     player,
-                    winningCombination: combination
+                    winningCells: getWinningCells(combination)
                 };
             }
         });
