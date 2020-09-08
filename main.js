@@ -14,7 +14,10 @@ const domElements = (() => {
     // store announcer p tag element
     const announcerElem = document.querySelector('.announcer');
 
-    return { gameBoardCells, announcerElem}
+    // store start game button element
+    const btnStartGame = document.getElementById('btn-start-game');
+
+    return { gameBoardCells, announcerElem, btnStartGame }
 })();
 
 // module for manipulating the DOM
@@ -116,6 +119,9 @@ const gameController = (() => {
 
         // set current player
         currentPlayer = players.player1;
+
+        // change text of start game button
+        displayController.setTextContent(domElements.btnStartGame, 'Restart Game');
 
         // set click event listener on cells that only fires once
         eventController.addEvent(
@@ -290,5 +296,5 @@ const eventController = (() => {
     return { addEvent, removeEvent };
 })();
 
-// start the game
-gameController.startGame();
+// add click event to start game button
+eventController.addEvent(domElements.btnStartGame, 'click', gameController.startGame);
