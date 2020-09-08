@@ -241,21 +241,23 @@ const gameController = (() => {
     // announce winner or draw
     const announce = (status, winner) => {
         const announcerElem = domElements.announcerElem;
+
         switch (status) {
             case 'win':
                 displayController.setTextContent(
                     announcerElem,
                     `${winner.player.name} wins with ${winner.player.mark}'s`
                 );
-                displayController.showElement(announcerElem);
                 break;
             case 'draw':
                 displayController.setTextContent(announcerElem, 'Draw!');
-                displayController.showElement(announcerElem);
                 break;
             default:
                 break;
         }
+
+        // show announcer element
+        displayController.showElement(announcerElem);
     };
 
     return { startGame };
