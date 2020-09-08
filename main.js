@@ -42,7 +42,24 @@ const displayController = (() => {
         element.classList.remove('is-visible');
     };
 
-    return { render, setTextContent, showElement, hideElement};
+    // add class to elements
+    const addClassToElements = (elements, htmlClass) => {
+        elements.forEach(element => element.classList.add(`${htmlClass}`))
+    };
+
+    // remove class to elements
+    const removeClassFromElements = (elements, htmlClass) => {
+        elements.forEach(element => element.classList.remove(`${htmlClass}`))
+    };
+
+    return {
+        render,
+        setTextContent,
+        showElement,
+        hideElement,
+        addClassToElements,
+        removeClassFromElements
+    };
 })();
 
 // module for manipulating gameboard
