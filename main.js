@@ -110,7 +110,7 @@ const gameController = (() => {
     const startGame = () => {
         // reset game to starting settings
         reset();
-        
+
         // get players
         players = getPlayers();
 
@@ -124,7 +124,6 @@ const gameController = (() => {
             processCellClick,
             { once: true }
         );
-
     };
 
     // end the game
@@ -137,7 +136,7 @@ const gameController = (() => {
         );
     };
 
-    // reset game to beggining
+    // reset game settings
     const reset = () => {
         // reset players and current player and turn
         players = null;
