@@ -267,16 +267,24 @@ const gameController = (() => {
 const eventController = (() => {
     // add event listener
     const addEvent = (target, type, listener, options) => {
-        target.forEach(element => {
-            element.addEventListener(`${type}`, listener, options);
-        });
+        if (target instanceof Array) {
+            target.forEach(element => {
+                element.addEventListener(`${type}`, listener, options);
+            });
+        } else {
+            target.addEventListener(`${type}`, listener, options);
+        }
     };
 
     // remove event listener
     const removeEvent = (target, type, listener) => {
-        target.forEach(element => {
-            element.removeEventListener(`${type}`, listener);
-        });
+        if (target instanceof Array) {
+            target.forEach(element => {
+                element.removeEventListener(`${type}`, listener);
+            });
+        } else {
+            target.removeEventListener(`${type}`, listener);
+        }
     };
 
     return { addEvent, removeEvent };
