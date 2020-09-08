@@ -14,10 +14,16 @@ const domElements = (() => {
     // store announcer p tag element
     const announcerElem = document.querySelector('.announcer');
 
-    // store start game button element
-    const btnStartGame = document.getElementById('btn-start-game');
+    // store form
+    const formNamePlayer = document.getElementById('form-name-player');
 
-    return { gameBoardCells, announcerElem, btnStartGame }
+    // store inputs
+    const inputsNamePlayer = [...formNamePlayer.querySelectorAll('input')];
+
+    // store start game button element
+    const btnStartGame = formNamePlayer.querySelector('button');
+
+    return { gameBoardCells, announcerElem, btnStartGame, inputsNamePlayer };
 })();
 
 // module for manipulating the DOM
@@ -159,11 +165,18 @@ const gameController = (() => {
         displayController.removeClassFromElements(domElements.gameBoardCells, 'highlight');
     };
 
-    // get players, TODO: get user input for player names
+    // get players
     const getPlayers = () => {
+        // store input values
+        const valuesNamePlayer = [
+            domElements.inputsNamePlayer[0].value,
+            domElements.inputsNamePlayer[1].value
+        ];
+
+        // create player
         const players = {
-            player1: playerFactory('Player1', 'X'),
-            player2: playerFactory('Player2', 'O'),
+            player1: playerFactory(valuesNamePlayer[0] || 'Player1', 'X'),
+            player2: playerFactory(valuesNamePlayer[1] || 'Player2', 'O'),
         };
 
         return players;
