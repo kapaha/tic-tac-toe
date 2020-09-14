@@ -22,12 +22,17 @@
             <div data-index="7"></div>
             <div data-index="8"></div>
         </div>
-        <form class = "form" id="form-name-player" novalidate autocomplete="off">
-            <label for="name-player-one">Player 1</label>
-            <input type="text" id="name-player-one">
-            <label for="name-player-two">Player 2</label>
-            <input type="text" id="name-player-two">
-            <button type="button" class="btn" id="btn-start-game">Start Game</button>
+        <div class="toggle-content is-visible" id="mode-select-btns">
+            <button class="btn" data-mode="sp">Singleplayer</button>
+            <button class="btn" data-mode="mp">Multiplayer</button>
+        </div>
+        <form class="toggle-content" id="game-form" novalidate autocomplete="off">
+            <label for="p1-name-input" class="toggle-content is-visible">player 1</label>
+            <input type="text" class="toggle-content is-visible" id="p1-name-input">
+            <label for="p2-name-input" class="toggle-content">player 2</label>
+            <input type="text" class="toggle-content" id="p2-name-input">
+            <button type="button" class="btn" id="start-btn">start game</button>
+            <button type="button" class="btn toggle-content is-visible" id="back-btn">Back</button>
         </form>
         <h2 class="announcer toggle-content">Winner!</h2>
     </main>
