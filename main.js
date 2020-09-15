@@ -66,22 +66,49 @@ const AIFactory = (name, mark) => {
         return indexToMakeCombination;
     };
 
+    const getPossibleWinnableCombinations = (combinations, playerMark) => {
+        // checks if every value at a index of gameboard is equal to mark
+        const isEqualMark = (index) => gameBoard.getValue(index) === playerMark;
+
+        // filter out combinations that arent possible as opponent mark there
+        const filteredCombinations = combinations.filter(combination => {
+            if (!combination.some(isEqualMark)) return true;
+        });
+
+        // filter out indexs that are taken by ai mark
+        return filteredCombinations.map(combination => {
+            return combination.filter(index => {
+                if (gameBoard.getValue(index) !== 'O') return true
+            })
+        });
+    };
+
+    const randomNumber = (maxExclusive) => {
+        return Math.floor(Math.random() * maxExclusive);
+    };
+
     const takeTurn = (aiMark, playerMark) => {
         // make a copy of the winning combinations
         const winningCombinations = gameController.getWinningCombinations();
-
         // check if theres a index way to win
         const indexToWin = getIndexOfCombinationCell(winningCombinations, aiMark);
         // check if theres a index to not lose
         const indexToNotLose = getIndexOfCombinationCell(winningCombinations, playerMark);
+        // check if theres a index to setup for a win and get two in a combination
+        const indexToSetupWin = getPossibleWinnableCombinations(winningCombinations, playerMark);
 
         // place a mark in a winning cell if available
         // else place a mark in a cell to prevent a loss
-        // else place a mark in a random empty cel
-        if (indexToWin) {
+        // else place a mark in a cell to get two marks in a combination
+        // else place a mark in a random empty cell
+        if (indexToWin != null) {
             gameBoard.editGameBoard(indexToWin, aiMark);
-        } else if (indexToNotLose) {
+        } else if (indexToNotLose != null) {
             gameBoard.editGameBoard(indexToNotLose, aiMark);
+        } else if (indexToSetupWin.length !== 0) {
+            const randomArrayNum = randomNumber(indexToSetupWin.length);
+            const randomIndexNum = randomNumber(indexToSetupWin[randomArrayNum].length);
+            gameBoard.editGameBoard(indexToSetupWin[randomArrayNum][randomIndexNum], aiMark);
         } else {
             // place a mark in a random empty cell
             gameBoard.editGameBoard(getRandomEmptyCellIndex(), aiMark);
@@ -93,7 +120,7 @@ const AIFactory = (name, mark) => {
         mark,
         isAI,
         takeTurn,
-        testWin
+        testWin,
     };
 };
 
