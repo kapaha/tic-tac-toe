@@ -1,90 +1,100 @@
 // factory for creating players
 const playerFactory = (name, mark) => {
-    return { name, mark };
+    return { name, mark, isAI: false };
 };
 
 // factory for creating AI
 const AIFactory = (name, mark) => {
     const isAI = true;
 
-    const winningCombinations = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6],
-    ];
-
-    const findEmptyCells = () => {
+    const getRandomEmptyCellIndex = () => {
         // get all empty cells on board
         const emptyCells = gameBoard.getEmptyCellsIndexs();
 
         // get a random number between 0 and amount of empty cells
         const randomNumber = Math.floor(Math.random() * emptyCells.length);
 
-        // return index of empty cell
+        // return index of random empty cell
         return emptyCells[randomNumber];
     };
 
+    // testing
     const testWin = () => {
-        const mark = 'X'
-        const cellsToMark = [4, 8];
+        const aiMark = 'O';
+        const cellsToMark = [6, 8];
+        const aiCellsToMark = [0, 2];
 
         cellsToMark.forEach(cell => {
             gameBoard.editGameBoard(cell, mark);
         });
+
+        aiCellsToMark.forEach(cell => {
+            gameBoard.editGameBoard(cell, aiMark);
+        });
     };
 
-    const preventThreeInRow = () => {
+    const getIndexOfCombinationCell = (combinationArray, mark) => {
         // get empty cells indexs
         const emptyCellsIndex = gameBoard.getEmptyCellsIndexs();
 
-        // get opponents mark
-        const opMark = 'X';
+        let indexToMakeCombination = null;
 
-        // create copy of gameboard
-        const gb = gameBoard.copyGameBoard();
-
-        // checks if value at index in gameboard is equal to opponents mark
-
-        let indexToStopWin = null;
-
+        // iterate over the empty cells indexs
         emptyCellsIndex.some(index => {
-            const gbCopy = [...gb];
-            // place opponents mark in empty cells
-            gbCopy[index] = opMark;
+            // create copy of gameboard
+            const copyOfGameBoard = gameBoard.copyGameBoard();
 
-            const isEqualMark = (index) => gbCopy[index] === opMark;
-            return winningCombinations.some(combination => {
-                if(combination.every(isEqualMark)) {
-                    indexToStopWin = index;
+            // place mark in the empty cell
+            copyOfGameBoard[index] = mark;
+
+            // checks if every value at a index of gameboard is equal to mark
+            const isEqualMark = (index) => copyOfGameBoard[index] === mark;
+
+            // loop through combinations untill one is found
+            // where all values equal mark
+            return combinationArray.some(combination => {
+                if (combination.every(isEqualMark)) {
+                    // set value to the index
+                    indexToMakeCombination = index;
+                    // break out of .some
                     return true;
                 }
             });
         });
 
-        // if there is a index to stop a win return true else false
-        if (indexToStopWin !== null) {
-            // place mark to stop
-            gameBoard.editGameBoard(indexToStopWin, 'O');
+        // return the index
+        return indexToMakeCombination;
+    };
 
-            return true;
+    const takeTurn = (aiMark, playerMark) => {
+        // make a copy of the winning combinations
+        const winningCombinations = gameController.getWinningCombinations();
+
+        // check if theres a index way to win
+        const indexToWin = getIndexOfCombinationCell(winningCombinations, aiMark);
+        // check if theres a index to not lose
+        const indexToNotLose = getIndexOfCombinationCell(winningCombinations, playerMark);
+
+        // place a mark in a winning cell if available
+        // else place a mark in a cell to prevent a loss
+        // else place a mark in a random empty cel
+        if (indexToWin) {
+            gameBoard.editGameBoard(indexToWin, aiMark);
+        } else if (indexToNotLose) {
+            gameBoard.editGameBoard(indexToNotLose, aiMark);
+        } else {
+            // place a mark in a random empty cell
+            gameBoard.editGameBoard(getRandomEmptyCellIndex(), aiMark);
         }
-
-        return false;
     };
 
-    const takeTurn = (mark) => {
-
-        if (preventThreeInRow()) return;
-        // place a mark in a empty cell
-        gameBoard.editGameBoard(findEmptyCells(), mark);
+    return {
+        name,
+        mark,
+        isAI,
+        takeTurn,
+        testWin
     };
-
-    return { name, mark, isAI, findEmptyCells, takeTurn, preventThreeInRow, testWin };
 };
 
 // module for storing and returning DOM elements
@@ -184,13 +194,13 @@ const gameBoard = (() => {
 
     // get empty cells indexs on gameboard
     const getEmptyCellsIndexs = () => {
-        let emptyCells = [];
+        let emptyCellsIndexs = [];
 
         _gameBoardArray.forEach((value, index) => {
-            if (value === '') emptyCells.push(index);
+            if (value === '') emptyCellsIndexs.push(index);
         });
 
-        return emptyCells;
+        return emptyCellsIndexs;
     };
 
     // return a copy of the gameboard array
@@ -399,7 +409,7 @@ const gameController = (() => {
                     const AI = getCurrentPlayer();
 
                     // ai take a turn
-                    AI.takeTurn(AI.mark);
+                    AI.takeTurn(AI.mark, currentPlayer.mark);
 
                     // check if winner or draw
                     if (!isWinOrDraw(AI)) turn++;
@@ -478,7 +488,10 @@ const gameController = (() => {
         displayController.showElement(announcerElem);
     };
 
-    return { startGame, handleModeSelect, backToModeSelect };
+    // return a copy of winningCombinations
+    const getWinningCombinations = () => [...winningCombinations];
+
+    return { startGame, handleModeSelect, backToModeSelect, getWinningCombinations };
 })();
 
 // module for creating event listeners
