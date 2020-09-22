@@ -4,7 +4,7 @@ const playerFactory = (name, mark) => {
 };
 
 // factory for creating AI
-const AIFactory = (name, mark) => {
+const AIFactory = (name, mark, opponentMark) => {
     // play the best possible move
     const bestMove = () => {
         // get all available postions to place a mark
@@ -84,7 +84,7 @@ const AIFactory = (name, mark) => {
             // iterate over available positions
             availablePositions.forEach(index => {
                 // place a mark at available position
-                gameBoard.editGameBoard(index, 'X');
+                gameBoard.editGameBoard(index, opponentMark);
 
                 // get the score of the new gameboard with the above position marked
                 let score = minimax(true);
@@ -235,6 +235,8 @@ const gameController = (() => {
     let gamemode = null;
     let gameActive = false;
 
+    const marks = ['X', 'O'];
+
     // all possible winning combinations (lines)
     const winningCombinations = [
         [0, 1, 2],
@@ -293,7 +295,6 @@ const gameController = (() => {
     };
 
     const nextTurn = () => {
-        // switch player
         switchPlayer();
 
         if (currentPlayer.isAI) {
@@ -439,16 +440,19 @@ const gameController = (() => {
 
     // get players
     const getPlayers = () => {
-        // create new player from factory
-        const player1 = playerFactory(domElems.gameFormElems.p1Input.value, 'X');
+        // get random mark for each player
+        const player1Mark = getRandomArrayElement(marks);
+        const player2Mark = player1Mark === 'X' ? 'O' : 'X';
 
-        let player2 = null;
+        // create new player from factory
+        const player1 = playerFactory(domElems.gameFormElems.p1Input.value, player1Mark);
 
         // if singleplayer player2 is computer, else is a new player from factory
+        let player2 = null;
         if (gamemode === 'sp') {
-            player2 = AIFactory('computer', 'O');
+            player2 = AIFactory('computer', player2Mark, player1Mark);
         } else {
-            player2 = playerFactory(domElems.gameFormElems.p2Input.value, 'O');
+            player2 = playerFactory(domElems.gameFormElems.p2Input.value, player2Mark);
         }
 
         return [player1, player2];
