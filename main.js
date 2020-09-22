@@ -169,13 +169,20 @@ const displayController = (() => {
         elements.forEach(element => element.classList.remove(`${htmlClass}`))
     };
 
+    // show who's turn it is
+    const showCurrentPlayer = (currentPlayer) => {
+        const text = `${currentPlayer.name} - ${currentPlayer.mark}'s turn`;
+        setTextContent(domElems.announcerElem, text);
+    }
+
     return {
         render,
         setTextContent,
         showElement,
         hideElement,
         addClassToElements,
-        removeClassFromElements
+        removeClassFromElements,
+        showCurrentPlayer
     };
 })();
 
@@ -297,6 +304,9 @@ const gameController = (() => {
     const nextTurn = () => {
         switchPlayer();
 
+        // show who's turn it is
+        displayController.showCurrentPlayer(currentPlayer);
+
         if (currentPlayer.isAI) {
             // AI play best move
             currentPlayer.bestMove();
@@ -337,6 +347,12 @@ const gameController = (() => {
 
         // hide back button
         displayController.hideElement(domElems.gameFormElems.backBtn);
+
+        // show who's turn it is
+        displayController.showCurrentPlayer(currentPlayer);
+
+        // show announcer element
+        displayController.showElement(domElems.announcerElem);
 
         // set click event listener on cells that only fires once
         eventController.addEvent(
@@ -440,19 +456,23 @@ const gameController = (() => {
 
     // get players
     const getPlayers = () => {
+        // get player names from text inputs
+        const player1Name = domElems.gameFormElems.p1Input.value || 'player1';
+        const player2Name = domElems.gameFormElems.p2Input.value || 'player2';
+
         // get random mark for each player
         const player1Mark = getRandomArrayElement(marks);
         const player2Mark = player1Mark === 'X' ? 'O' : 'X';
 
         // create new player from factory
-        const player1 = playerFactory(domElems.gameFormElems.p1Input.value, player1Mark);
+        const player1 = playerFactory(player1Name, player1Mark);
 
         // if singleplayer player2 is computer, else is a new player from factory
         let player2 = null;
         if (gamemode === 'sp') {
             player2 = AIFactory('computer', player2Mark, player1Mark);
         } else {
-            player2 = playerFactory(domElems.gameFormElems.p2Input.value, player2Mark);
+            player2 = playerFactory(player2Name, player2Mark);
         }
 
         return [player1, player2];
@@ -521,9 +541,6 @@ const gameController = (() => {
             const drawMessage = 'Draw!';
             displayController.setTextContent(announcerElem, drawMessage);
         }
-
-        // show announcer element
-        displayController.showElement(announcerElem);
     };
 
     // return a copy of winningCombinations

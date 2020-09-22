@@ -26,11 +26,11 @@
             <button class="btn" data-mode="sp">Singleplayer</button>
             <button class="btn" data-mode="mp">Multiplayer</button>
         </div>
-        <form class="toggle-content" id="game-form" novalidate autocomplete="off">
+        <form class="toggle-content" id="game-form" autocomplete="off">
             <label for="p1-name-input" class="toggle-content is-visible">player 1</label>
-            <input type="text" class="toggle-content is-visible" id="p1-name-input">
+            <input type="text" class="toggle-content is-visible" id="p1-name-input" maxlength="10">
             <label for="p2-name-input" class="toggle-content">player 2</label>
-            <input type="text" class="toggle-content" id="p2-name-input">
+            <input type="text" class="toggle-content" id="p2-name-input" maxlength="10">
             <button type="button" class="btn" id="start-btn">start game</button>
             <button type="button" class="btn toggle-content is-visible" id="back-btn">Back</button>
         </form>
