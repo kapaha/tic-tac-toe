@@ -535,7 +535,7 @@ const gameController = (() => {
         const announcerElem = domElems.announcerElem;
 
         if (result.status.includes('win')) {
-            const winMessage = `${result.winner.name} wins!`;
+            const winMessage = `${result.winner.name} wins with ${result.winner.mark}s!`;
             displayController.setTextContent(announcerElem, winMessage);
         } else {
             const drawMessage = 'Draw!';
