@@ -34,6 +34,9 @@ const AIFactory = (name, mark) => {
 
         // make the best move
         gameBoard.editGameBoard(move, mark);
+
+        // render the gameboard
+        displayController.render();
     };
 
     // returns best score of all possible moves of the game
@@ -244,6 +247,11 @@ const gameController = (() => {
         [2, 4, 6]
     ];
 
+    // return a random array element
+    const getRandomArrayElement = (array) => {
+        return array[Math.floor(Math.random() * array.length)];
+    };
+
     // proccess the click event on a cell
     const handeCellClick = (event) => {
         // return if game not active or
@@ -292,9 +300,6 @@ const gameController = (() => {
             // AI play best move
             currentPlayer.bestMove();
 
-            // render the gameboard
-            displayController.render();
-
             // announce if winner or draw, else next turn
             handleWinnerOrDraw();
         }
@@ -314,8 +319,8 @@ const gameController = (() => {
         // get players
         players = getPlayers();
 
-        // set current player
-        currentPlayer = players[0];
+        // get a random starting player
+        currentPlayer = getRandomArrayElement(players);
 
         // activate game
         gameActive = true;
@@ -339,6 +344,14 @@ const gameController = (() => {
             handeCellClick,
             { once: true }
         );
+
+        if (currentPlayer.isAI) {
+            // AI play best move
+            currentPlayer.bestMove();
+
+            // announce if winner or draw, else next turn
+            handleWinnerOrDraw();
+        }
     };
 
     const handleModeSelect = (event) => {
@@ -518,7 +531,7 @@ const gameController = (() => {
         backToModeSelect,
         getWinningCombinations,
         getWinner,
-        getGameResult
+        getGameResult,
     };
 })();
 
