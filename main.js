@@ -212,8 +212,8 @@ const gameBoard = (() => {
 const gameController = (() => {
     let players = null;
     let currentPlayer = null;
-    let turn = 1;
     let gamemode = null;
+    let gameActive = false;
 
     // all possible winning combinations (lines)
     const winningCombinations = [
@@ -226,6 +226,103 @@ const gameController = (() => {
         [0, 4, 8],
         [2, 4, 6]
     ];
+
+    // proccess the click event on a cell
+    const handeCellClick = (event) => {
+        // return if game not active or
+        // clicked cell is not empty or
+        // current player is AI
+        if (
+            !gameActive ||
+            !gameBoard.isCellEmpty(event.target.dataset.index) ||
+            currentPlayer.isAI
+        ) return;
+
+        // get the click cell index
+        const cellIndex = event.target.dataset.index;
+
+        // place current players mark in the clicked cell
+        gameBoard.editGameBoard(cellIndex, currentPlayer.mark);
+
+        // render the gameboard
+        displayController.render();
+
+        // announce if winner or draw, else next turn
+        handleWinnerOrDraw();
+    };
+
+    const handleWinnerOrDraw = () => {
+        // get result
+        const result = getGameResult();
+
+        // if theres a result announce it, else play next turn
+        if (result !== null) {
+            if (result.status.includes('win')) {
+                displayController.addClassToElements(result.winner.winningCells, 'highlight');
+            }
+            announce(result);
+            endGame();
+        } else {
+            nextTurn();
+        }
+    };
+
+    const nextTurn = () => {
+        // switch player
+        switchPlayer();
+
+        if (currentPlayer.isAI) {
+            // AI play best move
+            currentPlayer.bestMove();
+
+            // render the gameboard
+            displayController.render();
+
+            // announce if winner or draw, else next turn
+            handleWinnerOrDraw();
+        }
+    };
+
+    // switch current player
+    const switchPlayer = () => {
+        currentPlayer = currentPlayer === players[0] ?
+            players[1] : players[0];
+    };
+
+    // start the game
+    const startGame = () => {
+        // reset game to starting settings
+        reset();
+
+        // get players
+        players = getPlayers();
+
+        // set current player
+        currentPlayer = players[0];
+
+        // activate game
+        gameActive = true;
+
+        // change text of start game button
+        displayController.setTextContent(domElems.gameFormElems.startBtn, 'Restart Game');
+
+        // hide player name inputs
+        displayController.hideElement(domElems.gameFormElems.p1Input);
+        displayController.hideElement(domElems.gameFormElems.p1Label);
+        displayController.hideElement(domElems.gameFormElems.p2Input);
+        displayController.hideElement(domElems.gameFormElems.p2Label);
+
+        // hide back button
+        displayController.hideElement(domElems.gameFormElems.backBtn);
+
+        // set click event listener on cells that only fires once
+        eventController.addEvent(
+            domElems.gameBoardCells,
+            'click',
+            handeCellClick,
+            { once: true }
+        );
+    };
 
     const handleModeSelect = (event) => {
         // set gamemode
@@ -265,40 +362,11 @@ const gameController = (() => {
         domElems.gameForm.reset();
     };
 
-    // start the game
-    const startGame = () => {
-        // reset game to starting settings
-        reset();
-
-        // get players
-        players = getPlayers();
-
-        // set current player
-        currentPlayer = players.player1;
-
-        // change text of start game button
-        displayController.setTextContent(domElems.gameFormElems.startBtn, 'Restart Game');
-
-        // hide player name inputs
-        displayController.hideElement(domElems.gameFormElems.p1Input);
-        displayController.hideElement(domElems.gameFormElems.p1Label);
-        displayController.hideElement(domElems.gameFormElems.p2Input);
-        displayController.hideElement(domElems.gameFormElems.p2Label);
-
-        // hide back button
-        displayController.hideElement(domElems.gameFormElems.backBtn);
-
-        // set click event listener on cells that only fires once
-        eventController.addEvent(
-            domElems.gameBoardCells,
-            'click',
-            processCellClick,
-            { once: true }
-        );
-    };
-
     // end the game
     const endGame = () => {
+        // stop the game
+        gameActive = false;
+
         // change text of start game button
         displayController.setTextContent(domElems.gameFormElems.startBtn, 'Start Game');
 
@@ -319,7 +387,7 @@ const gameController = (() => {
         eventController.removeEvent(
             domElems.gameBoardCells,
             'click',
-            processCellClick
+            handeCellClick
         );
     };
 
@@ -328,7 +396,6 @@ const gameController = (() => {
         // reset players and current player and turn
         players = null;
         currentPlayer = null;
-        turn = 1;
 
         // reset gameboard
         gameBoard.clearGameBoard();
@@ -354,77 +421,26 @@ const gameController = (() => {
             player2 = playerFactory(domElems.gameFormElems.p2Input.value, 'O');
         }
 
-        return { player1, player2 };
+        return [player1, player2];
     };
 
-    // get the current player then change current player to the other one
-    const getCurrentPlayer = () => {
-        const previousPlayer = currentPlayer;
+    const getGameResult = () => {
+        let result = {};
 
-        if (currentPlayer === players.player1) {
-            // swap the current player
-            currentPlayer = players.player2;
-        } else {
-            // swap the current player
-            currentPlayer = players.player1;
-        }
-
-        return previousPlayer;
-    };
-
-    // proccess the click event on a cell
-    const processCellClick = (event) => {
-        // if it is computer turn return
-        if (currentPlayer.isAI) return;
-
-        // get the click cell info
-        const cell = {
-            element: event.target,
-            index: event.target.dataset.index
-        }
-
-        // check if cell is empty
-        if (gameBoard.getValue(cell.index) === '') {
-            // get the current player
-            const currentPlayer = getCurrentPlayer();
-
-            // place player mark
-            gameBoard.editGameBoard(cell.index, currentPlayer.mark);
-
-            // if no winner or draw, next turn
-            if (!isWinOrDraw(currentPlayer)) {
-                turn++;
-                // if its singleplayer ai take a turn
-                if (gamemode === 'sp') {
-                    // get the AI
-                    const AI = getCurrentPlayer();
-
-                    // ai take a turn
-                    AI.takeTurn(currentPlayer.mark);
-
-                    // check if winner or draw
-                    if (!isWinOrDraw(AI)) turn++;
-                }
-            }
-
-        }
-    };
-
-    const isWinOrDraw = (currentPlayer) => {
         // get winner if there is one
-        const winner = getWinner(currentPlayer);
+        const winner = getWinner();
 
         // announce if theres a winner or draw and end the game, else next round
         if (winner) {
-            announce('win', winner);
-            displayController.addClassToElements(winner.winningCells, 'highlight');
-            endGame();
-            return true;
+            result.winner = winner;
+            result.status = `win: ${winner.mark}`;
         } else if (isDraw()) {
-            announce('draw');
-            endGame();
-            return true;
+            result.status = 'draw';
+        } else {
+            return result = null;
         }
+
+        return result;
     };
 
     // get winning cell dom elements
@@ -435,44 +451,41 @@ const gameController = (() => {
     };
 
     // check if there is a winnner
-    const getWinner = (player) => {
+    const getWinner = () => {
         let winner = null;
 
-        // returns true if value at index is equal to players mark
-        const isEqualMark = (index) => gameBoard.getValue(index) === player.mark;
+        const equals3 = (a, b, c) => {
+            return gameBoard.getValue(a) === gameBoard.getValue(b) &&
+                gameBoard.getValue(b) === gameBoard.getValue(c) &&
+                gameBoard.getValue(a) !== '';
+        };
 
         // return a winner if player has three marks in a row
         winningCombinations.forEach(combination => {
-            if (combination.every(isEqualMark)) {
-                winner = {
-                    player,
-                    winningCells: getWinningCells(combination)
-                };
+            if (equals3(combination[0], combination[1], combination[2])) {
+                const winningMark = gameBoard.getValue(combination[0]);
+                const winningPlayer = players.find(player => player.mark === winningMark);
+                winner = winningPlayer;
+                winner.winningCells = getWinningCells(combination)
             }
         });
 
         return winner;
     };
 
-    // check if it is a draw
-    const isDraw = () => turn === 9;
+    // its a draw if theres no empty cells left
+    const isDraw = () => gameBoard.getEmptyCellsIndexes().length === 0;
 
     // announce winner or draw
-    const announce = (status, winner) => {
+    const announce = (result) => {
         const announcerElem = domElems.announcerElem;
 
-        switch (status) {
-            case 'win':
-                displayController.setTextContent(
-                    announcerElem,
-                    `${winner.player.name} wins with ${winner.player.mark}'s`
-                );
-                break;
-            case 'draw':
-                displayController.setTextContent(announcerElem, 'Draw!');
-                break;
-            default:
-                break;
+        if (result.status.includes('win')) {
+            const winMessage = `${result.winner.name} wins!`;
+            displayController.setTextContent(announcerElem, winMessage);
+        } else {
+            const drawMessage = 'Draw!';
+            displayController.setTextContent(announcerElem, drawMessage);
         }
 
         // show announcer element
@@ -482,7 +495,14 @@ const gameController = (() => {
     // return a copy of winningCombinations
     const getWinningCombinations = () => [...winningCombinations];
 
-    return { startGame, handleModeSelect, backToModeSelect, getWinningCombinations };
+    return {
+        startGame,
+        handleModeSelect,
+        backToModeSelect,
+        getWinningCombinations,
+        getWinner,
+        getGameResult
+    };
 })();
 
 // module for creating event listeners
