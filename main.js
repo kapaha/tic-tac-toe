@@ -5,86 +5,103 @@ const playerFactory = (name, mark) => {
 
 // factory for creating AI
 const AIFactory = (name, mark) => {
-    const isAI = true;
+    // play the best possible move
+    const bestMove = () => {
+        // get all available postions to place a mark
+        const availablePositions = gameBoard.getEmptyCellsIndexes();
 
-    // return a random number between 0 and maxNumber exclusive
-    const randomNumber = (maxNumber) => {
-        return Math.floor(Math.random() * maxNumber);
-    };
+        let bestScore = -Infinity;
+        let move;
 
-    // return a random index of a given array
-    const getRandomIndex = (array) => randomNumber(array.length);
+        // iterate over available positions
+        availablePositions.forEach(index => {
+            // place a mark at available position
+            gameBoard.editGameBoard(index, mark);
 
-    const getCellIndexsToWinGame  = (winningCombinations, emptyCellsIndexs, markToWin) => {
-        return emptyCellsIndexs.filter(emptyCellIndex => {
-            // get a copy of the gameboard
-            const copyOfGameBoard = gameBoard.copyGameBoard();
+            // get the score of the new gameboard with the above position marked
+            let score = minimax(false);
 
-            // place mark in empty cell
-            copyOfGameBoard[emptyCellIndex] = markToWin;
+            // remove mark from gameboard
+            gameBoard.editGameBoard(index, '');
 
-            // true if copyOfGameboard[index] is equal to markToWin
-            const isEqualMark = (index) => copyOfGameBoard[index] === markToWin;
-
-            // return true if the placed mark makes a winning combination
-            return winningCombinations.some(combination => combination.every(isEqualMark));
-        });
-    };
-
-    const getPossibleWinningCombinations = (winningCombinations, opponentMark) => {
-        // checks if every value at a index of gameboard is equal to mark
-        const isEqualMark = (index) => gameBoard.getValue(index) === opponentMark;
-
-        // filter out winningCombinations that arent possible as opponent mark there
-        const filteredCombinations = winningCombinations.filter(combination => {
-            if (!combination.some(isEqualMark)) return true;
+            // if this move has a higher score than the current bestScore
+            // set the bestScore to this score and set the move to the index
+            if (score > bestScore) {
+                bestScore = score;
+                move = index;
+            };
         });
 
-        // filter out indexs that are taken by mark
-        return filteredCombinations.map(combination => {
-            return combination.filter(index => {
-                if (gameBoard.getValue(index) !== mark) return true
-            })
-        });
+        // make the best move
+        gameBoard.editGameBoard(move, mark);
     };
 
-    const takeTurn = (playerMark) => {
-        // get all empty cells indexs
-        const emptyCellsIndexs = gameBoard.getEmptyCellsIndexs();
-        // make a copy of the winning combinations
-        const winningCombinations = gameController.getWinningCombinations();
+    // returns best score of all possible moves of the game
+    const minimax = (isMaximizing) => {
+        // get the result of the game
+        const result = gameController.getGameResult();
 
-        // get indexs to win game
-        const indexsToWin = getCellIndexsToWinGame(winningCombinations, emptyCellsIndexs, mark);
+        // return a score if the game is over
+        if (result !== null) {
+            // scores based on the AI's mark
+            const scores = {
+                'win: X': mark === 'X' ? 10 : -10,
+                'win: O': mark === 'O' ? 10 : -10,
+                draw: 0,
+            };
+            return scores[result.status];
+        }
 
-        // get indexs to not lose game
-        const indexsToNotLose = getCellIndexsToWinGame(winningCombinations, emptyCellsIndexs, playerMark);
+        // get all available postions to place a mark
+        const availablePositions = gameBoard.getEmptyCellsIndexes();
 
-        // get combinations that ai can win with
-        const possibleWinningCombinations = getPossibleWinningCombinations(winningCombinations, playerMark);
+        // if the move is the maximizing player
+        if (isMaximizing) {
+            let bestScore = -Infinity;
 
-        if (indexsToWin.length !== 0) {
-            // place a mark to win the game
-            gameBoard.editGameBoard(indexsToWin[getRandomIndex(indexsToWin)], mark);
-        } else if (indexsToNotLose.length !== 0) {
-            // place a mark to stop opponent from winning
-            gameBoard.editGameBoard(indexsToNotLose[getRandomIndex(indexsToNotLose)], mark);
-        } else if (possibleWinningCombinations.length !== 0) {
-            const randomArrayNum = randomNumber(possibleWinningCombinations.length);
-            const randomIndexNum = randomNumber(possibleWinningCombinations[randomArrayNum].length);
-            // place a mark in a cell that can setup for a win
-            gameBoard.editGameBoard(possibleWinningCombinations[randomArrayNum][randomIndexNum], mark);
+            // iterate over available positions
+            availablePositions.forEach(index => {
+                // place a mark at available position
+                gameBoard.editGameBoard(index, mark);
+
+                // get the score of the new gameboard with the above position marked
+                let score = minimax(false);
+
+                // remove mark from gameboard
+                gameBoard.editGameBoard(index, '');
+
+                // update bestScore to equal score if score is higher than bestscore
+                bestScore = Math.max(score, bestScore);
+            });
+
+            return bestScore;
         } else {
-            // place a mark at a random cell
-            gameBoard.editGameBoard(emptyCellsIndexs[getRandomIndex(emptyCellsIndexs)], mark);
+            let bestScore = Infinity;
+
+            // iterate over available positions
+            availablePositions.forEach(index => {
+                // place a mark at available position
+                gameBoard.editGameBoard(index, 'X');
+
+                // get the score of the new gameboard with the above position marked
+                let score = minimax(true);
+
+                // remove mark from gameboard
+                gameBoard.editGameBoard(index, '');
+
+                // update bestScore to equal score if score is lower than bestscore
+                bestScore = Math.min(score, bestScore);
+            });
+
+            return bestScore;
         }
     };
 
     return {
         name,
         mark,
-        isAI,
-        takeTurn,
+        isAI: true,
+        bestMove,
     };
 };
 
