@@ -173,7 +173,6 @@ const gameBoard = (() => {
     // change value of array element
     const editGameBoard = (index, newValue) => {
         _gameBoardArray[index] = newValue;
-        displayController.render();
     };
 
     // set all array elements to empty string
@@ -182,9 +181,8 @@ const gameBoard = (() => {
         displayController.render();
     };
 
-
     // get empty cells indexs on gameboard
-    const getEmptyCellsIndexs = () => {
+    const getEmptyCellsIndexes = () => {
         let emptyCellsIndexs = [];
 
         _gameBoardArray.forEach((value, index) => {
@@ -194,17 +192,19 @@ const gameBoard = (() => {
         return emptyCellsIndexs;
     };
 
+    // return true if cell is empty, else false
+    const isCellEmpty = (index) => _gameBoardArray[index] === '';
+
     // return a copy of the gameboard array
-    const copyGameBoard = () => {
-        return [..._gameBoardArray];
-    };
+    const copyGameBoard = () => [..._gameBoardArray];
 
     return {
         getValue,
         editGameBoard,
         clearGameBoard,
-        getEmptyCellsIndexs,
-        copyGameBoard
+        getEmptyCellsIndexes,
+        copyGameBoard,
+        isCellEmpty,
     };
 })();
 
