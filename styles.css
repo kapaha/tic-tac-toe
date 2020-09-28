@@ -1,6 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');
 
+:root {
+    --background-color: #34495e;
+    --cell-color: #ecf0f1;
+    --winning-cell-color: #2ecc71;
+
+    --main-font-color: #ecf0f1;
+    --cell-font-color: #000;
+    --btn-font-color: #000;
+}
+
 *,
 *::before,
 *::after {
@@ -11,7 +21,8 @@
 }
 
 body {
-    background-color: lightblue;
+    background-color: var(--background-color);
+    color: var(--main-font-color);
 }
 
 .container {
@@ -28,7 +39,7 @@ body {
 
     margin-bottom: 5rem;
 
-    background-color: lightgrey;
+    background-color: var(--cell-color);
 
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -37,6 +48,7 @@ body {
 
 .gameboard > div {
     font-family: 'Bungee', cursive;
+    color: var(--cell-font-color);
     display: grid;
     place-items: center;
     border: 2px solid black;
@@ -56,9 +68,10 @@ body {
 }
 
 .highlight {
-    background-color: lightgreen;
+    background-color: var(--winning-cell-color);
 }
 
 .btn {
     font-size: 2rem;
+    color: var(--btn-font-color);
 }
