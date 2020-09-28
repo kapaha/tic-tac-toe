@@ -155,9 +155,9 @@ const AIFactory = (name, mark, difficulty, opponentMark) => {
 // module for storing and returning DOM elements
 const domElems = (() => {
     const _gameBoardElem = document.querySelector('.gameboard');
+
     const gameBoardCells = [..._gameBoardElem.querySelectorAll('div')];
     const announcerElem = document.querySelector('.announcer');
-
     const modeSelectbtns = document.getElementById('mode-select-btns');
     const gameForm = document.getElementById('game-form');
     const gameFormElems = {
@@ -591,15 +591,10 @@ const gameController = (() => {
         }
     };
 
-    // return a copy of winningCombinations
-    const getWinningCombinations = () => [...winningCombinations];
-
     return {
         startGame,
         handleModeSelect,
         backToModeSelect,
-        getWinningCombinations,
-        getWinner,
         getGameResult,
         getRandomArrayElement
     };
