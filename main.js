@@ -266,15 +266,11 @@ const gameBoard = (() => {
     // return true if cell is empty, else false
     const isCellEmpty = (index) => _gameBoardArray[index] === '';
 
-    // return a copy of the gameboard array
-    const copyGameBoard = () => [..._gameBoardArray];
-
     return {
         getValue,
         editGameBoard,
         clearGameBoard,
         getEmptyCellsIndexes,
-        copyGameBoard,
         isCellEmpty,
     };
 })();
