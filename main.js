@@ -277,13 +277,14 @@ const gameBoard = (() => {
 
 // module for controlling the game
 const gameController = (() => {
+    const marks = ['X', 'O'];
+    const aiMoveTimer = 1000;
+
     let players = null;
     let currentPlayer = null;
     let gamemode = null;
     let gameActive = false;
     let difficulty = null;
-
-    const marks = ['X', 'O'];
 
     // all possible winning combinations (lines)
     const winningCombinations = [
@@ -355,7 +356,7 @@ const gameController = (() => {
 
                 // announce if winner or draw, else next turn
                 handleWinnerOrDraw();
-            }, 1000);
+            }, aiMoveTimer);
         }
     };
 
@@ -411,7 +412,7 @@ const gameController = (() => {
 
                 // announce if winner or draw, else next turn
                 handleWinnerOrDraw();
-            }, 1000);
+            }, aiMoveTimer);
         }
     };
 
