@@ -5,11 +5,6 @@ const playerFactory = (name, mark) => {
 
 // factory for creating AI
 const AIFactory = (name, mark, difficulty, opponentMark) => {
-    // return a random integer between min and max included
-    const getRandomInteger = (min, max) => {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-
     // make a move based on difficulty
     const makeMove = () => {
         switch (difficulty) {
@@ -51,7 +46,7 @@ const AIFactory = (name, mark, difficulty, opponentMark) => {
         const availablePositions = gameBoard.getEmptyCellsIndexes();
 
         // get a random available position
-        const randomAvailablePosition = availablePositions[getRandomInteger(0, availablePositions.length - 1)];
+        const randomAvailablePosition = gameController.getRandomArrayElement(availablePositions);
 
         // place mark at a random available position
         gameBoard.editGameBoard(randomAvailablePosition, mark);
@@ -609,6 +604,7 @@ const gameController = (() => {
         getWinningCombinations,
         getWinner,
         getGameResult,
+        getRandomArrayElement
     };
 })();
 
