@@ -215,7 +215,7 @@ const displayController = (() => {
 
     // show who's turn it is
     const showCurrentPlayer = (currentPlayer) => {
-        const text = `${currentPlayer.name} - ${currentPlayer.mark}'s turn`;
+        const text = `${currentPlayer.name}'s Turn - ${currentPlayer.mark}`;
         setTextContent(domElems.announcerElem, text);
     }
 
