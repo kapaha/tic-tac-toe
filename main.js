@@ -331,7 +331,7 @@ const gameController = (() => {
         // get result
         const result = getGameResult();
 
-        // if theres a result announce it, else play next turn
+        // if theres a result announce it and end the game, else play next turn
         if (result !== null) {
             if (result.status.includes('win')) {
                 displayController.addClassToElements(result.winner.winningCells, 'highlight');
@@ -631,7 +631,7 @@ const eventController = (() => {
     return { addEvent, removeEvent };
 })();
 
-// add click events to ui elements
+// add click events to UI elements
 eventController.addEvent(domElems.modeSelectbtns, 'click', gameController.handleModeSelect);
 eventController.addEvent(domElems.gameFormElems.startBtn, 'click', gameController.startGame);
 eventController.addEvent(domElems.gameFormElems.backBtn, 'click', gameController.backToModeSelect);
