@@ -45,6 +45,7 @@ const AIFactory = (name, mark, difficulty, opponentMark) => {
         }
     };
 
+    // play a random possible move
     const randomMove = () => {
         // get all available postions to place a mark
         const availablePositions = gameBoard.getEmptyCellsIndexes();
@@ -85,7 +86,6 @@ const AIFactory = (name, mark, difficulty, opponentMark) => {
 
         // make the best move
         gameBoard.editGameBoard(move, mark);
-
     };
 
     // returns best score of all possible moves of the game
