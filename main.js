@@ -358,11 +358,13 @@ const gameController = (() => {
         displayController.showCurrentPlayer(currentPlayer);
 
         if (currentPlayer.isAI) {
-            // AI make a move
-            currentPlayer.makeMove();
+            setTimeout(() => {
+                // AI make a move
+                currentPlayer.makeMove();
 
-            // announce if winner or draw, else next turn
-            handleWinnerOrDraw();
+                // announce if winner or draw, else next turn
+                handleWinnerOrDraw();
+            }, 1000);
         }
     };
 
@@ -408,16 +410,17 @@ const gameController = (() => {
         eventController.addEvent(
             domElems.gameBoardCells,
             'click',
-            handeCellClick,
-            { once: true }
+            handeCellClick
         );
 
         if (currentPlayer.isAI) {
-            // AI make a move
-            currentPlayer.makeMove();
+            setTimeout(() => {
+                // AI make a move
+                currentPlayer.makeMove();
 
-            // announce if winner or draw, else next turn
-            handleWinnerOrDraw();
+                // announce if winner or draw, else next turn
+                handleWinnerOrDraw();
+            }, 1000);
         }
     };
 
