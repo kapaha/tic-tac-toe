@@ -4,7 +4,58 @@ const playerFactory = (name, mark) => {
 };
 
 // factory for creating AI
-const AIFactory = (name, mark, opponentMark) => {
+const AIFactory = (name, mark, difficulty, opponentMark) => {
+    // return a random integer between min and max included
+    const getRandomInteger = (min, max) => {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+
+    // make a move based on difficulty
+    const makeMove = () => {
+        switch (difficulty) {
+            case 'easy':
+                // 30% chance to play best move instead of random move
+                chanceBestMove(30);
+                break;
+            case 'medium':
+                // 50% chance to play best move instead of random move
+                chanceBestMove(50);
+                break;
+            case 'impossible':
+                bestMove();
+                break;
+            default:
+                break;
+        }
+
+        // render the gameboard
+        displayController.render();
+    };
+
+    // place a best move based on chance else play a random move
+    const chanceBestMove = (chance) => {
+        // get a random number between 0 and 100 exclusive
+        const randomNumber = Math.random() * 100;
+
+        // if randomNumber is below chance, best move is played
+        if (randomNumber < chance) {
+            bestMove();
+        } else {
+            randomMove();
+        }
+    };
+
+    const randomMove = () => {
+        // get all available postions to place a mark
+        const availablePositions = gameBoard.getEmptyCellsIndexes();
+
+        // get a random available position
+        const randomAvailablePosition = availablePositions[getRandomInteger(0, availablePositions.length - 1)];
+
+        // place mark at a random available position
+        gameBoard.editGameBoard(randomAvailablePosition, mark);
+    };
+
     // play the best possible move
     const bestMove = () => {
         // get all available postions to place a mark
@@ -35,8 +86,6 @@ const AIFactory = (name, mark, opponentMark) => {
         // make the best move
         gameBoard.editGameBoard(move, mark);
 
-        // render the gameboard
-        displayController.render();
     };
 
     // returns best score of all possible moves of the game
@@ -104,7 +153,7 @@ const AIFactory = (name, mark, opponentMark) => {
         name,
         mark,
         isAI: true,
-        bestMove,
+        makeMove,
     };
 };
 
@@ -241,6 +290,7 @@ const gameController = (() => {
     let currentPlayer = null;
     let gamemode = null;
     let gameActive = false;
+    let difficulty = null;
 
     const marks = ['X', 'O'];
 
@@ -308,8 +358,8 @@ const gameController = (() => {
         displayController.showCurrentPlayer(currentPlayer);
 
         if (currentPlayer.isAI) {
-            // AI play best move
-            currentPlayer.bestMove();
+            // AI make a move
+            currentPlayer.makeMove();
 
             // announce if winner or draw, else next turn
             handleWinnerOrDraw();
@@ -363,8 +413,8 @@ const gameController = (() => {
         );
 
         if (currentPlayer.isAI) {
-            // AI play best move
-            currentPlayer.bestMove();
+            // AI make a move
+            currentPlayer.makeMove();
 
             // announce if winner or draw, else next turn
             handleWinnerOrDraw();
@@ -379,6 +429,9 @@ const gameController = (() => {
         if (gamemode === 'mp') {
             displayController.showElement(domElems.gameFormElems.p2Input);
             displayController.showElement(domElems.gameFormElems.p2Label);
+        } else {
+            // set difficulty
+            difficulty = event.target.dataset.difficulty;
         }
 
         // hide mode select btns
@@ -470,7 +523,7 @@ const gameController = (() => {
         // if singleplayer player2 is computer, else is a new player from factory
         let player2 = null;
         if (gamemode === 'sp') {
-            player2 = AIFactory('computer', player2Mark, player1Mark);
+            player2 = AIFactory('computer', player2Mark, difficulty, player1Mark);
         } else {
             player2 = playerFactory(player2Name, player2Mark);
         }
