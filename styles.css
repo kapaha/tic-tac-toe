@@ -47,7 +47,8 @@ button {
     color: var(--btn-font-color);
     background-color: var(--btn-background-color);
     font-size: 1.5rem;
-}
+    transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out,
+        background-color 0.3s ease-in-out; }
 
 .btn:active {
     transform: translateY(1px);
