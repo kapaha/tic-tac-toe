@@ -23,10 +23,12 @@
             <div data-index="8"></div>
         </div>
         <div class="toggle-content is-visible" id="mode-select-btns">
-            <button class="btn" data-mode="sp" data-difficulty="easy">Easy</button>
-            <button class="btn" data-mode="sp" data-difficulty="medium">Medium</button>
-            <button class="btn" data-mode="sp" data-difficulty="impossible">Impossible</button>
-            <button class="btn" data-mode="mp">Multiplayer</button>
+            <div class="btn-grid">
+                <button class="btn" data-mode="sp" data-difficulty="easy">Easy</button>
+                <button class="btn" data-mode="sp" data-difficulty="medium">Medium</button>
+                <button class="btn" data-mode="sp" data-difficulty="impossible">Impossible</button>
+                <button class="btn column-span-all" data-mode="mp">Multiplayer</button>
+            </div>
         </div>
         <form class="toggle-content" id="game-form" autocomplete="off">
             <label for="p1-name-input" class="toggle-content is-visible">player 1</label>
@@ -36,7 +38,7 @@
             <button type="button" class="btn" id="start-btn">start game</button>
             <button type="button" class="btn toggle-content is-visible" id="back-btn">Back</button>
         </form>
-        <h2 class="announcer toggle-content">Winner!</h2>
+        <h1 class="announcer toggle-content">Winner!</h1>
     </main>
 </body>
 
