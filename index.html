@@ -22,6 +22,7 @@
             <div data-index="7"></div>
             <div data-index="8"></div>
         </div>
+        <h1 class="announcer toggle-content">Winner!</h1>
         <div class="toggle-content is-visible" id="mode-select-btns">
             <div class="btn-grid">
                 <button class="btn" data-mode="sp" data-difficulty="easy">Easy</button>
@@ -31,14 +32,17 @@
             </div>
         </div>
         <form class="toggle-content" id="game-form" autocomplete="off">
-            <label for="p1-name-input" class="toggle-content is-visible">player 1</label>
-            <input type="text" class="toggle-content is-visible" id="p1-name-input" maxlength="10">
-            <label for="p2-name-input" class="toggle-content">player 2</label>
-            <input type="text" class="toggle-content" id="p2-name-input" maxlength="10">
-            <button type="button" class="btn" id="start-btn">start game</button>
-            <button type="button" class="btn toggle-content is-visible" id="back-btn">Back</button>
+            <div class="form-grid">
+                <label for="p1-name-input" class="toggle-content is-visible">Player 1
+                    <input type="text" class="toggle-content is-visible" id="p1-name-input" maxlength="10">
+                </label>
+                <label for="p2-name-input" class="toggle-content">Player 2
+                    <input type="text" class="toggle-content" id="p2-name-input" maxlength="10">
+                </label>
+                <button type="button" class="btn" id="start-btn">Start game</button>
+                <button type="button" class="btn toggle-content is-visible" id="back-btn">Back</button>
+            </div>
         </form>
-        <h1 class="announcer toggle-content">Winner!</h1>
     </main>
 </body>
 

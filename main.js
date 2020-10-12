@@ -168,6 +168,7 @@ const domElems = (() => {
         startBtn: gameForm.querySelector('#start-btn'),
         backBtn: gameForm.querySelector('#back-btn')
     };
+    const formGrid = document.querySelector('.form-grid');
 
     return {
         gameBoardCells,
@@ -175,6 +176,7 @@ const domElems = (() => {
         modeSelectbtns,
         gameForm,
         gameFormElems,
+        formGrid
     };
 })();
 
@@ -384,10 +386,11 @@ const gameController = (() => {
         displayController.setTextContent(domElems.gameFormElems.startBtn, 'Restart Game');
 
         // hide player name inputs
-        displayController.hideElement(domElems.gameFormElems.p1Input);
         displayController.hideElement(domElems.gameFormElems.p1Label);
-        displayController.hideElement(domElems.gameFormElems.p2Input);
         displayController.hideElement(domElems.gameFormElems.p2Label);
+
+        // remove grid
+        domElems.formGrid.style.display = 'block';
 
         // hide back button
         displayController.hideElement(domElems.gameFormElems.backBtn);
@@ -462,16 +465,17 @@ const gameController = (() => {
         // stop the game
         gameActive = false;
 
+        // change form back to grid
+        domElems.formGrid.style.display = 'grid';
+
         // change text of start game button
         displayController.setTextContent(domElems.gameFormElems.startBtn, 'Start Game');
 
         // show player name inputs
-        displayController.showElement(domElems.gameFormElems.p1Input);
         displayController.showElement(domElems.gameFormElems.p1Label);
 
         // show player 2 input field if gamemode is multiplayer
         if (gamemode === 'mp') {
-            displayController.showElement(domElems.gameFormElems.p2Input);
             displayController.showElement(domElems.gameFormElems.p2Label);
         }
 

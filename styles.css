@@ -12,6 +12,7 @@
     --cell-color: #ecf0f1;
     --winning-cell-color: #2ecc71;
     --btn-background-color: #ecf0f1;
+    --input-background-color: #ecf0f1;
 
     /* focus */
     --focus-border-color: #000;
@@ -48,7 +49,8 @@ button {
     background-color: var(--btn-background-color);
     font-size: 1.5rem;
     transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out,
-        background-color 0.3s ease-in-out; }
+        background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
 
 .btn:active {
     transform: translateY(1px);
@@ -74,10 +76,37 @@ button {
     place-items: center;
 }
 
+label {
+    display: block;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+input {
+    background-color: var(--input-background-color);
+    font-size: 1.2rem;
+    width: 100%;
+    border: 1px solid lightgrey;
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+input:hover {
+    border-color: var(--focus-border-color);
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--focus-border-color);
+    box-shadow: var(--focus-shadow);
+}
+
 .gameboard {
     width: 702px;
     height: 702px;
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
 
     background-color: var(--cell-color);
 
@@ -98,15 +127,39 @@ button {
 #mode-select-btns > .btn-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-gap: 18px;
+    grid-gap: 26px;
 }
 
 .column-span-all {
     grid-column: 1 / -1;
 }
 
+.form-grid {
+    display: grid;
+    grid-template-areas: "input1 input2"
+                         "btn1    btn2";
+    grid-gap: 26px;
+}
+
+#game-form label:first-of-type {
+    grid-area: input1;
+}
+
+#game-form label:nth-of-type(2) {
+    grid-area: input2;
+}
+
+#game-form button:first-of-type {
+    grid-area: btn1;
+}
+
+#game-form button:nth-of-type(2) {
+    grid-area: btn2;
+}
+
 .announcer {
     font-size: 3rem;
+    margin-bottom: 3rem;
 }
 
 .toggle-content {
