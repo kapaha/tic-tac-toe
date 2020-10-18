@@ -225,10 +225,6 @@ input:focus {
 }
 
 @media (orientation: landscape) {
-    .container {
-        margin: 0;
-    }
-
     .gameboard {
         width: 80vh;
         height: 80vh;
