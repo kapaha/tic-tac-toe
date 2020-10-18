@@ -160,6 +160,7 @@ input:focus {
 .announcer {
     font-size: 3rem;
     margin-bottom: 3rem;
+    font-weight: 400;
 }
 
 .toggle-content {
