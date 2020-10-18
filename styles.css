@@ -104,8 +104,12 @@ input:focus {
 }
 
 .gameboard {
-    width: 702px;
-    height: 702px;
+    width: 80vw;
+    height: 80vw;
+
+    max-width: 702px;
+    max-height: 702px;
+
     margin-bottom: 3rem;
 
     background-color: var(--cell-color);
@@ -161,6 +165,7 @@ input:focus {
     font-size: 3rem;
     margin-bottom: 3rem;
     font-weight: 400;
+    text-align: center;
 }
 
 .toggle-content {
@@ -173,4 +178,59 @@ input:focus {
 
 .highlight {
     background-color: var(--winning-cell-color);
+}
+
+@media only screen and (max-width: 650px) {
+    .container {
+        margin: 0;
+    }
+
+    .gameboard > div {
+        font-size: 18vw;
+    }
+
+    #mode-select-btns > .btn-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .column-span-all {
+        grid-column: initial;
+    }
+}
+
+@media only screen and (max-width: 550px) {
+    #mode-select-btns > .btn-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .announcer {
+        font-size: 2rem;
+    }
+
+    .form-grid {
+        grid-template-areas: "input1"
+                             "input2"
+                             "btn1"
+                             "btn2";
+    }
+}
+
+@media only screen and (max-height: 800px) {
+    .form-grid {
+        grid-template-areas: "btn1"
+                             "btn2"
+                             "input1"
+                             "input2";
+    }
+}
+
+@media (orientation: landscape) {
+    .container {
+        margin: 0;
+    }
+
+    .gameboard {
+        width: 80vh;
+        height: 80vh;
+    }
 }
