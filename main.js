@@ -455,9 +455,6 @@ const gameController = (() => {
         // hide player 2 input
         displayController.hideElement(domElems.gameFormElems.p2Input);
         displayController.hideElement(domElems.gameFormElems.p2Label);
-
-        // clear form
-        domElems.gameForm.reset();
     };
 
     // end the game
