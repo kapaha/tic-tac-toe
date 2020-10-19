@@ -46,7 +46,8 @@ button {
     transform: translateY(1px);
 }
 
-.btn:focus {
+.btn:focus,
+input:focus {
     outline: none;
     border-color: var(--dark-color);
     box-shadow: var(--black-shadow);
@@ -85,23 +86,17 @@ input:hover {
     border-color: var(--dark-color);
 }
 
-input:focus {
-    outline: none;
-    border-color: var(--dark-color);
-    box-shadow: var(--black-shadow);
+.column-span-all {
+    grid-column: 1 / -1;
 }
 
 .gameboard {
     width: 80vw;
     height: 80vw;
-
     max-width: 702px;
     max-height: 702px;
-
     margin-bottom: 3rem;
-
     background-color: var(--light-color);
-
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
@@ -116,36 +111,34 @@ input:focus {
     font-size: 9rem;
 }
 
-#mode-select-btns > .btn-grid {
+.btn-grid,
+.form-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
     grid-gap: 26px;
 }
 
-.column-span-all {
-    grid-column: 1 / -1;
+.btn-grid {
+    grid-template-columns: repeat(3, 1fr);
 }
 
 .form-grid {
-    display: grid;
     grid-template-areas: "input1 input2"
                          "btn1    btn2";
-    grid-gap: 26px;
 }
 
-#game-form label:first-of-type {
+.form-grid label:first-of-type {
     grid-area: input1;
 }
 
-#game-form label:nth-of-type(2) {
+.form-grid label:nth-of-type(2) {
     grid-area: input2;
 }
 
-#game-form button:first-of-type {
+.form-grid button:first-of-type {
     grid-area: btn1;
 }
 
-#game-form button:nth-of-type(2) {
+.form-grid button:nth-of-type(2) {
     grid-area: btn2;
 }
 
@@ -198,7 +191,7 @@ input:focus {
         font-size: 18vw;
     }
 
-    #mode-select-btns > .btn-grid {
+    .btn-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 
@@ -208,7 +201,7 @@ input:focus {
 }
 
 @media only screen and (max-width: 550px) {
-    #mode-select-btns > .btn-grid {
+    .btn-grid {
         grid-template-columns: 1fr;
     }
 
