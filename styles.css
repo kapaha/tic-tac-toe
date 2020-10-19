@@ -2,21 +2,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');
 
 :root {
-    /* font colors */
-    --main-font-color: #ecf0f1;
-    --cell-font-color: #000;
-    --btn-font-color: #000;
-
-    /* colors */
+    --light-color: #ecf0f1;
+    --dark-color: #000;
+    --success-color: #2ecc71;
     --background-color: #34495e;
-    --cell-color: #ecf0f1;
-    --winning-cell-color: #2ecc71;
-    --btn-background-color: #ecf0f1;
-    --input-background-color: #ecf0f1;
-
-    /* focus */
-    --focus-border-color: #000;
-    --focus-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.25);
+    --black-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.25);
 }
 
 *,
@@ -30,7 +20,7 @@
 
 body {
     background-color: var(--background-color);
-    color: var(--main-font-color);
+    color: var(--light-color);
 }
 
 button {
@@ -45,8 +35,8 @@ button {
     border: solid 1px transparent;
     border-radius: 0.5em;
     padding: 0.6em 1.5em;
-    color: var(--btn-font-color);
-    background-color: var(--btn-background-color);
+    color: var(--dark-color);
+    background-color: var(--light-color);
     font-size: 1.5rem;
     transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out,
         background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
@@ -58,12 +48,12 @@ button {
 
 .btn:focus {
     outline: none;
-    border-color: var(--focus-border-color);
-    box-shadow: var(--focus-shadow);
+    border-color: var(--dark-color);
+    box-shadow: var(--black-shadow);
 }
 
 .btn:hover {
-    color: var(--main-font-color);
+    color: var(--light-color);
     border-color: currentColor;
     background-color: transparent;
 }
@@ -81,7 +71,7 @@ label {
 }
 
 input {
-    background-color: var(--input-background-color);
+    background-color: var(--light-color);
     font-size: 1.2rem;
     width: 100%;
     border: 1px solid lightgrey;
@@ -92,13 +82,13 @@ input {
 }
 
 input:hover {
-    border-color: var(--focus-border-color);
+    border-color: var(--dark-color);
 }
 
 input:focus {
     outline: none;
-    border-color: var(--focus-border-color);
-    box-shadow: var(--focus-shadow);
+    border-color: var(--dark-color);
+    box-shadow: var(--black-shadow);
 }
 
 .gameboard {
@@ -110,7 +100,7 @@ input:focus {
 
     margin-bottom: 3rem;
 
-    background-color: var(--cell-color);
+    background-color: var(--light-color);
 
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -119,7 +109,7 @@ input:focus {
 
 .gameboard > div {
     font-family: 'Bungee', cursive;
-    color: var(--cell-font-color);
+    color: var(--dark-color);
     display: grid;
     place-items: center;
     border: 2px solid black;
@@ -175,7 +165,7 @@ input:focus {
 }
 
 .highlight {
-    background-color: var(--winning-cell-color);
+    background-color: var(--success-color);
 }
 
 .info-section {
