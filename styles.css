@@ -223,10 +223,3 @@ input:focus {
                              "input2";
     }
 }
-
-@media (orientation: landscape) {
-    .gameboard {
-        width: 80vh;
-        height: 80vh;
-    }
-}
