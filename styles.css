@@ -70,8 +70,6 @@ button {
 
 .container {
     margin: 4rem auto;
-    padding: 2rem;
-
     display: grid;
     place-items: center;
 }
@@ -180,9 +178,30 @@ input:focus {
     background-color: var(--winning-cell-color);
 }
 
+.info-section {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.info-section > p {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.github-link {
+    transition: 0.3s;
+}
+
+.github-link:hover {
+    filter: invert(30%);
+    transform: scale(1.1);
+}
+
 @media only screen and (max-width: 650px) {
     .container {
-        margin: 0;
+        margin: 2rem;
     }
 
     .gameboard > div {
