@@ -280,7 +280,6 @@ const gameBoard = (() => {
 // module for controlling the game
 const gameController = (() => {
     const _marks = ['X', 'O'];
-    const _aiMoveTimer = 1000;
 
     let _players = null;
     let _currentPlayer = null;
@@ -346,15 +345,8 @@ const gameController = (() => {
         // show who's turn it is
         displayController.showCurrentPlayer(_currentPlayer);
 
-        if (_currentPlayer.isAI) {
-            setTimeout(() => {
-                // AI make a move
-                _currentPlayer.makeMove();
-
-                // _announce if winner or draw, else next turn
-                _handleWinnerOrDraw();
-            }, _aiMoveTimer);
-        }
+        // if AI is current player AI take turn
+        _handleAITurn();
     };
 
     // switch current player
@@ -479,6 +471,20 @@ const gameController = (() => {
         }
     };
 
+    const _handleAITurn = () => {
+        const aiMoveTimer = 1000;
+
+        if (_currentPlayer.isAI) {
+            setTimeout(() => {
+                // AI make a move
+                _currentPlayer.makeMove();
+
+                // announce if winner or draw, else next turn
+                _handleWinnerOrDraw();
+            }, aiMoveTimer);
+        }
+    };
+
     // start the game
     const startGame = () => {
         // reset game to starting settings
@@ -519,15 +525,8 @@ const gameController = (() => {
             _handeCellClick
         );
 
-        if (_currentPlayer.isAI) {
-            setTimeout(() => {
-                // AI make a move
-                _currentPlayer.makeMove();
-
-                // announce if winner or draw, else next turn
-                _handleWinnerOrDraw();
-            }, _aiMoveTimer);
-        }
+        // if AI is current player AI take turn
+        _handleAITurn();
     };
 
     const handleModeSelect = (event) => {
