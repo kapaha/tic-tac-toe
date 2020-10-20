@@ -580,7 +580,7 @@ const gameController = (() => {
         } else if (_isDraw()) {
             result.status = 'draw';
         } else {
-            return result = null;
+            result = null;
         }
 
         return result;
