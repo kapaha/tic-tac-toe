@@ -221,6 +221,36 @@ const displayController = (() => {
         setTextContent(domElems.announcerElem, text);
     }
 
+    const showInputs = (gamemode) => {
+        displayController.showElement(domElems.gameFormElems.p1Label);
+        if (gamemode === 'mp') {
+            displayController.showElement(domElems.gameFormElems.p2Label);
+        }
+    };
+
+    const hideInputs = (gamemode) => {
+        displayController.hideElement(domElems.gameFormElems.p1Label);
+        if (gamemode === 'mp') {
+            displayController.hideElement(domElems.gameFormElems.p2Label);
+        }
+    };
+
+    const hideBackButton = () => {
+        // make form block
+        domElems.formGrid.style.display = 'block';
+
+        // hide back button
+        displayController.hideElement(domElems.gameFormElems.backBtn);
+    };
+
+    const showBackButton = () => {
+        // make form grid
+        domElems.formGrid.style.display = 'grid';
+
+        // show back button
+        displayController.showElement(domElems.gameFormElems.backBtn);
+    };
+
     return {
         render,
         setTextContent,
@@ -228,7 +258,11 @@ const displayController = (() => {
         hideElement,
         addClassToElements,
         removeClassFromElements,
-        showCurrentPlayer
+        showCurrentPlayer,
+        showInputs,
+        hideInputs,
+        hideBackButton,
+        showBackButton
     };
 })();
 
@@ -355,39 +389,23 @@ const gameController = (() => {
             _players[1] : _players[0];
     };
 
-    // end the game
     const _endGame = () => {
         // stop the game
         _gameActive = false;
 
-        // change form back to grid
-        domElems.formGrid.style.display = 'grid';
-
         // change text of start game button
         displayController.setTextContent(domElems.gameFormElems.startBtn, 'Start Game');
 
-        // show player name inputs
-        displayController.showElement(domElems.gameFormElems.p1Label);
-
-        // show player 2 input field if gamemode is multiplayer
-        if (_gamemode === 'mp') {
-            displayController.showElement(domElems.gameFormElems.p2Label);
-        }
-
         // show back button
-        displayController.showElement(domElems.gameFormElems.backBtn);
+        displayController.showBackButton();
 
-        // remove click event listener on cells
-        eventController.removeEvent(
-            domElems.gameBoardCells,
-            'click',
-            _handeCellClick
-        );
+        // show player name inputs
+        displayController.showInputs(_gamemode);
     };
 
     // reset game settings
     const _reset = () => {
-        // reset players and current player and turn
+        // reset players and current player
         _players = null;
         _currentPlayer = null;
 
@@ -485,9 +503,7 @@ const gameController = (() => {
         }
     };
 
-    // start the game
     const startGame = () => {
-        // reset game to starting settings
         _reset();
 
         // get players
@@ -496,34 +512,30 @@ const gameController = (() => {
         // get a random starting player
         _currentPlayer = getRandomArrayElement(_players);
 
-        // activate game
-        _gameActive = true;
-
         // change text of start game button
         displayController.setTextContent(domElems.gameFormElems.startBtn, 'Restart Game');
 
-        // hide player name inputs
-        displayController.hideElement(domElems.gameFormElems.p1Label);
-        displayController.hideElement(domElems.gameFormElems.p2Label);
-
-        // remove grid
-        domElems.formGrid.style.display = 'block';
+        // show player name inputs
+        displayController.hideInputs(_gamemode);
 
         // hide back button
-        displayController.hideElement(domElems.gameFormElems.backBtn);
+        displayController.hideBackButton();
 
-        // show who's turn it is
+        // set announcer element text
         displayController.showCurrentPlayer(_currentPlayer);
 
         // show announcer element
         displayController.showElement(domElems.announcerElem);
 
-        // set click event listener on cells that only fires once
+        // add click event listener on cells
         eventController.addEvent(
             domElems.gameBoardCells,
             'click',
             _handeCellClick
         );
+
+        // activate game
+        _gameActive = true;
 
         // if AI is current player AI take turn
         _handleAITurn();
@@ -533,17 +545,16 @@ const gameController = (() => {
         // set gamemode
         _gamemode = event.target.dataset.mode;
 
-        // show player 2 input field if gamemode is multiplayer
-        if (_gamemode === 'mp') {
-            displayController.showElement(domElems.gameFormElems.p2Input);
-            displayController.showElement(domElems.gameFormElems.p2Label);
-        } else {
-            // set difficulty
+        // if singleplayer set difficulty
+        if (_gamemode === 'sp') {
             _difficulty = event.target.dataset.difficulty;
         }
 
         // hide mode select btns
         displayController.hideElement(domElems.modeSelectbtns);
+
+        // show player name inputs
+        displayController.showInputs(_gamemode);
 
         // show form
         displayController.showElement(domElems.gameForm);
@@ -553,18 +564,20 @@ const gameController = (() => {
         // reset game settings
         _reset();
 
+        // hide player name inputs
+        displayController.hideInputs(_gamemode);
+
         // reset gamemode
         _gamemode = null;
+
+        // reset difficulty
+        _difficulty = null;
 
         // hide form
         displayController.hideElement(domElems.gameForm);
 
-        // hide mode select btns
+        // show mode select btns
         displayController.showElement(domElems.modeSelectbtns);
-
-        // hide player 2 input
-        displayController.hideElement(domElems.gameFormElems.p2Input);
-        displayController.hideElement(domElems.gameFormElems.p2Label);
     };
 
     const getGameResult = () => {
