@@ -7,7 +7,7 @@ Tic Tac Toe app created with HTML, CSS & Javascript for The Odin Project.
 Here is a working live demo: https://kapaha.github.io/tic-tac-toe/
 
 ## General info
-This project was created as a part of the [Javascript](https://www.https://www.theodinproject.com/courses/javascript/lessons/tic-tac-toe-javascript) course with [The Odin Project](https://theodinproject.com). The aim of this project was to solidate the knowledge I have learnt about factory functions and the module pattern.
+This project was created as a part of the [Javascript](https://www.theodinproject.com/courses/javascript/lessons/tic-tac-toe-javascript) course with [The Odin Project](https://theodinproject.com). The aim of this project was to solidate the knowledge I have learnt about factory functions and the module pattern.
 
 ## Features
 * Single player mode with difficulties: easy, medium and impossible
